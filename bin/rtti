@@ -1,0 +1,94 @@
+#!/usr/bin/env ruby
+require 'gli'
+begin # XXX: Remove this begin/rescue before distributing your app
+  require 'rtti'
+rescue LoadError
+  STDERR.puts "In development, you need to use `bundle exec bin/rtti` to run your app"
+  STDERR.puts "At install-time, RubyGems will make sure lib, etc. are in the load path"
+  STDERR.puts "Feel free to remove this message from bin/rtti now"
+  exit 64
+end
+
+include GLI::App
+
+program_desc 'Describe your application here'
+
+version Rtti::VERSION
+
+subcommand_option_handling :normal
+arguments :strict
+
+desc 'Return claned image to the client'
+switch [:i, :returnimage]
+
+desc 'Run then IP profile on RTTI'
+switch [:c, :cleanimage]
+
+desc 'Recursive'
+switch [:r, :recursive]
+
+desc 'RTTI hostname or IP address'
+# default_value '127.0.0.1'
+arg_name 'SERVERNAME'
+flag [:s, :server]
+
+desc 'KTM project name in the web.config'
+# default_value 'the default'
+arg_name 'PROJECT'
+flag [:p, :project]
+
+desc 'File extension to scan for'
+default_value 'tif'
+arg_name 'EXTENSION'
+flag [:e, :extension]
+
+desc 'The location of the images'
+default_value 'Current directory'
+arg_name 'DIRECTORY'
+flag [:d, :directory]
+
+desc 'The IIS application name'
+default_value 'mobilesdk'
+arg_name 'APPLICATION'
+flag [:a, :application]
+
+desc 'Send images to RTTI'
+arg_name 'Describe arguments to submit here'
+command :submit do |c|
+  c.action do |global_options,options,args|
+    puts 'global'
+    puts "application = #{global_options[:application]}"
+    # Your command logic here
+
+    # If you have any errors, just raise them
+    # raise "that command made no sense"
+
+  end
+end
+
+pre do |global,command,options,args|
+  puts "pre"
+  # TODO: check valid parameters
+
+  # Pre logic here
+  # Return true to proceed; false to abort and not call the
+  # chosen command
+  # Use skips_pre before a command to skip this block
+  # on that command only
+  true
+end
+
+post do |global,command,options,args|
+  puts "post"
+  # Post logic here
+  # Use skips_post before a command to skip this
+  # block on that command only
+end
+
+on_error do |exception|
+  # Error logic here
+  # return false to skip default error handling
+  true
+end
+
+exit run(ARGV)

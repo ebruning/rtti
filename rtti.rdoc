@@ -1,0 +1,5 @@
+= rtti
+
+Generate this with
+    rtti rdoc
+After you have described your command line interface
